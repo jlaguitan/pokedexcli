@@ -1,45 +1,47 @@
 package main
 
 import (
-	"strings"
 	"bufio"
-	"os"
 	"fmt"
+	"os"
+	"strings"
+	"pokedexcli/internal/pokecache"
 )
 
 type cliCommand struct {
-	name string
+	name        string
 	description string
-	callback func(*config) error
+	callback    func(*config) error
 }
 
 type config struct {
 	commands map[string]cliCommand
-	next *string
+	next     *string
 	previous *string
+	cache	*pokecache.Cache
 }
 
 func getCommands() map[string]cliCommand {
-	return map[string]cliCommand {
+	return map[string]cliCommand{
 		"exit": {
-			name:	"exit",
+			name:        "exit",
 			description: "Exit the Pokedex",
-			callback: commandExit,
+			callback:    commandExit,
 		},
 		"help": {
-			name: "help",
+			name:        "help",
 			description: "Displays a help message",
-			callback: commandHelp,
+			callback:    commandHelp,
 		},
 		"map": {
-			name: "map",
+			name:        "map",
 			description: "Displays 20 location areas",
-			callback: commandMap,
+			callback:    commandMap,
 		},
 		"mapb": {
-			name: "map",
+			name:        "mapb",
 			description: "Displays previous 20 location areas",
-			callback: commandMapb, 
+			callback:    commandMapb,
 		},
 	}
 }
@@ -55,16 +57,16 @@ func startRepl(cfg *config) {
 			if len(words) == 0 {
 				continue
 			}
-			
+
 			commands := cfg.commands
-			if value, ok := commands[words[0]]; ok{
+			if value, ok := commands[words[0]]; ok {
 				err := value.callback(cfg)
 				if err != nil {
 					fmt.Println(err)
 				}
 			} else {
 				fmt.Println("Unknown command")
-			}			
+			}
 		}
 	}
 }
@@ -82,13 +84,11 @@ Usage:
 `)
 
 	commands := cfg.commands
-	for key, value := range(commands) {
+	for key, value := range commands {
 		fmt.Println(key + ": " + value.description)
 	}
 	return nil
 }
-
-
 
 func cleanInput(text string) []string {
 	return strings.Fields(strings.ToLower(text))

@@ -9,7 +9,7 @@ import (
 	"pokedexcli/internal/pokeapi"
 )
 
-func commandMap(cfg *config) error {
+func commandMap(cfg *config, s string) error {
 	var url string
 	if cfg.next == nil {
 		url = "https://pokeapi.co/api/v2/location-area"
@@ -51,7 +51,7 @@ func commandMap(cfg *config) error {
 	return nil
 }
 
-func commandMapb(cfg *config) error {
+func commandMapb(cfg *config, s string) error {
 	//code mapb body, url = cfg.previous
 	var url string
 	if cfg.previous == nil {

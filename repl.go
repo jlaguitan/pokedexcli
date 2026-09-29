@@ -4,21 +4,21 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
 	"pokedexcli/internal/pokecache"
+	"strings"
 )
 
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(*config, string) error
 }
 
 type config struct {
 	commands map[string]cliCommand
 	next     *string
 	previous *string
-	cache	*pokecache.Cache
+	cache    *pokecache.Cache
 }
 
 func getCommands() map[string]cliCommand {
@@ -43,6 +43,11 @@ func getCommands() map[string]cliCommand {
 			description: "Displays previous 20 location areas",
 			callback:    commandMapb,
 		},
+		"explore": {
+			name:        "explore",
+			description: "Displays Pokemon list in an area",
+			callback:    commandExplore,
+		},
 	}
 }
 
@@ -60,9 +65,16 @@ func startRepl(cfg *config) {
 
 			commands := cfg.commands
 			if value, ok := commands[words[0]]; ok {
-				err := value.callback(cfg)
-				if err != nil {
-					fmt.Println(err)
+				if len(words) >= 2 {
+					err := value.callback(cfg, words[1])
+					if err != nil {
+						fmt.Println(err)
+					}
+				} else {
+					err := value.callback(cfg, "")
+					if err != nil {
+						fmt.Println(err)
+					}
 				}
 			} else {
 				fmt.Println("Unknown command")
@@ -71,13 +83,13 @@ func startRepl(cfg *config) {
 	}
 }
 
-func commandExit(cfg *config) error {
+func commandExit(cfg *config, s string) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp(cfg *config) error {
+func commandHelp(cfg *config, s string) error {
 	fmt.Print(`Welcome to the Pokedex!
 Usage:
 

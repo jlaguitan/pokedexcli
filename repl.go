@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"pokedexcli/internal/pokeapi"
 	"pokedexcli/internal/pokecache"
 	"strings"
 )
@@ -19,6 +20,7 @@ type config struct {
 	next     *string
 	previous *string
 	cache    *pokecache.Cache
+	pokedex  map[string]pokeapi.PokemonInfo
 }
 
 func getCommands() map[string]cliCommand {
@@ -47,6 +49,11 @@ func getCommands() map[string]cliCommand {
 			name:        "explore",
 			description: "Displays Pokemon list in an area",
 			callback:    commandExplore,
+		},
+		"catch": {
+			name:        "catch",
+			description: "Catch a Pokemon and save it to the Pokedex",
+			callback:    commandCatch,
 		},
 	}
 }

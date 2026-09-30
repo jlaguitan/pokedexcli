@@ -57,8 +57,13 @@ func getCommands() map[string]cliCommand {
 		},
 		"inspect": {
 			name:        "inspect",
-			description: "Inspect a pokemon",
+			description: "Inspect a caught pokemon",
 			callback:    commandInspect,
+		},
+		"pokedex": {
+			name: "pokedex",
+			description: "Print pokedex",
+			callback: commandPokedex,
 		},
 	}
 }
@@ -95,24 +100,9 @@ func startRepl(cfg *config) {
 	}
 }
 
-func commandExit(cfg *config, s string) error {
-	fmt.Println("Closing the Pokedex... Goodbye!")
-	os.Exit(0)
-	return nil
-}
 
-func commandHelp(cfg *config, s string) error {
-	fmt.Print(`Welcome to the Pokedex!
-Usage:
 
-`)
 
-	commands := cfg.commands
-	for key, value := range commands {
-		fmt.Println(key + ": " + value.description)
-	}
-	return nil
-}
 
 func cleanInput(text string) []string {
 	return strings.Fields(strings.ToLower(text))
